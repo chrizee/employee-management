@@ -1,0 +1,159 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{62D8894A-162D-4259-A7F9-F150E665D9C5}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>ConsoleApplication</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>EmployeeManagement</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".vscode\launch.json" />
+    <None Include=".vscode\tasks.json" />
+    <None Include=".vs\slnx.sqlite" />
+    <None Include=".vs\VSWorkspaceState.json" />
+    <None Include=".vs\WebApplication1\config\applicationhost.config" />
+    <None Include=".vs\WebApplication1\DesignTimeBuild\.dtbcache" />
+    <None Include=".vs\WebApplication1\v16\.suo" />
+    <None Include=".vs\WebApplication1\v16\Server\sqlite3\db.lock" />
+    <None Include=".vs\WebApplication1\v16\Server\sqlite3\storage.ide" />
+    <None Include="appsettings.Development.json" />
+    <None Include="appsettings.json" />
+    <None Include="libman.json" />
+    <None Include="myviews\test.cshtml" />
+    <None Include="nlog.config" />
+    <None Include="Properties\launchSettings.json" />
+    <None Include="Views\Account\Register.cshtml" />
+    <None Include="Views\Home\Create.cshtml" />
+    <None Include="Views\Home\Details.cshtml" />
+    <None Include="Views\Home\Edit.cshtml" />
+    <None Include="Views\Home\EmployeeNotFound.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\test.cshtml" />
+    <None Include="Views\Home\_ViewStart.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\NotFound.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\lib\jquery\jquery.min.map" />
+    <None Include="wwwroot\lib\jquery\jquery.slim.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DepartmentsController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Migrations\20191002161657_InitialMigration.cs" />
+    <Compile Include="Migrations\20191002161657_InitialMigration.Designer.cs">
+      <DependentUpon>20191002161657_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20191002165229_SeedEmployeeMigration.cs" />
+    <Compile Include="Migrations\20191002165229_SeedEmployeeMigration.Designer.cs">
+      <DependentUpon>20191002165229_SeedEmployeeMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20191002175855_AddPhotoPathColumn.cs" />
+    <Compile Include="Migrations\20191002175855_AddPhotoPathColumn.Designer.cs">
+      <DependentUpon>20191002175855_AddPhotoPathColumn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20191003184218_AddingAuthentication.cs" />
+    <Compile Include="Migrations\20191003184218_AddingAuthentication.Designer.cs">
+      <DependentUpon>20191003184218_AddingAuthentication.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\AppDbContextModelSnapshot.cs" />
+    <Compile Include="Models\AppDbContext.cs" />
+    <Compile Include="Models\Dept.cs" />
+    <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\IEmployeeRepository.cs" />
+    <Compile Include="Models\MockEmployeeRepository.cs" />
+    <Compile Include="Models\ModelBuilderExtensions.cs" />
+    <Compile Include="Models\SQLEmployeeRepository.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\EmployeeCreateViewModel.cs" />
+    <Compile Include="ViewModels\EmployeeEditViewModel.cs" />
+    <Compile Include="ViewModels\HomeDetailViewModel.cs" />
+    <Compile Include="ViewModels\RegisterViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="wwwroot\css\site.css" />
+    <Content Include="wwwroot\foo.html" />
+    <Content Include="wwwroot\images\064df4ba-3971-4709-b38d-b1629598b35d_ussd.png" />
+    <Content Include="wwwroot\images\16a31bd3-3e8b-4b57-ba1c-1b2fa7c8f924_campaign.png" />
+    <Content Include="wwwroot\images\1705a311-5a62-4833-9f44-0b7b9c192933_vlcsnap-2019-05-08-09h01m15s223.png" />
+    <Content Include="wwwroot\images\41978228-49aa-411f-aafc-0e5b4ad59e75_kano user.png" />
+    <Content Include="wwwroot\images\58af0399-24f6-4198-ac88-470b738ec30c_obehi.png" />
+    <Content Include="wwwroot\images\65cb126b-8413-45ae-a917-e225d760945f_home.png" />
+    <Content Include="wwwroot\images\e8e922ed-6a2f-452a-931a-1c631d0df44e_uniben logo.jpg" />
+    <Content Include="wwwroot\images\iribotor.jpg" />
+    <Content Include="wwwroot\images\uniben.jpg" />
+    <Content Include="wwwroot\index.html" />
+    <Content Include="wwwroot\js\custom.js" />
+    <Content Include="wwwroot\lib\bootstrap\css\bootstrap-grid.css" />
+    <Content Include="wwwroot\lib\bootstrap\css\bootstrap-grid.min.css" />
+    <Content Include="wwwroot\lib\bootstrap\css\bootstrap-reboot.css" />
+    <Content Include="wwwroot\lib\bootstrap\css\bootstrap-reboot.min.css" />
+    <Content Include="wwwroot\lib\bootstrap\css\bootstrap.css" />
+    <Content Include="wwwroot\lib\bootstrap\css\bootstrap.min.css" />
+    <Content Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.js" />
+    <Content Include="wwwroot\lib\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="wwwroot\lib\bootstrap\js\bootstrap.js" />
+    <Content Include="wwwroot\lib\bootstrap\js\bootstrap.min.js" />
+    <Content Include="wwwroot\lib\jquery\core.js" />
+    <Content Include="wwwroot\lib\jquery\jquery.js" />
+    <Content Include="wwwroot\lib\jquery\jquery.min.js" />
+    <Content Include="wwwroot\lib\jquery\jquery.slim.js" />
+    <Content Include="wwwroot\lib\jquery\jquery.slim.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".vs\EmployeeManagement\v16\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>
