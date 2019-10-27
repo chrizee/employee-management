@@ -58,12 +58,19 @@ namespace WebApplication1.Controllers
                 var result = await userManager.CreateAsync(user, model.Password);
                 if(result.Succeeded)
                 {
+                    var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+                    logger.Log(LogLevel.Warning, confirmationLink);
                     if(signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
                         return RedirectToAction("ListUsers", "Administration");
                     }
-                    await signInManager.SignInAsync(user, false);
-                    return RedirectToAction("index", "home");
+                    ViewBag.ErrorTitle = "Registration successful";
+                    ViewBag.ErrorMessage = "before you can login, please confirm your email by clicking on the confirmation link sent to your email.";
+                    return View("Error");
+
+                    //await signInManager.SignInAsync(user, false);
+                    //return RedirectToAction("index", "home");
                 }
                 foreach(var error in result.Errors)
                 {
@@ -94,8 +101,15 @@ namespace WebApplication1.Controllers
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, [FromQuery] string returnUrl)
         {
-            if(ModelState.IsValid)
-            {                
+            model.ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if(user != null && !user.EmailConfirmed && (await userManager.CheckPasswordAsync(user, model.Password)))
+                {
+                    ModelState.AddModelError(string.Empty, "Email is not confirmed");
+                    return View(model);
+                }
                 logger.LogError($"efe {returnUrl}");                
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if(result.Succeeded)
@@ -144,6 +158,19 @@ namespace WebApplication1.Controllers
                 return View("Login", loginViewModel);
             }
 
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = null;
+
+            if(email != null)
+            {
+                user = await userManager.FindByEmailAsync(email);
+                if(user != null && !user.EmailConfirmed)
+                {
+                    ModelState.AddModelError(string.Empty, "Email not confirmed yet");
+                    return View("Login", loginViewModel);
+                }
+            }
+
             var signInResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (signInResult.Succeeded)
             {
@@ -151,10 +178,8 @@ namespace WebApplication1.Controllers
             }
             else
             {
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 if (email != null)
                 {
-                    var user = await userManager.FindByEmailAsync(email);
                     if(user == null)
                     {                        
                         user = new ApplicationUser
@@ -163,7 +188,18 @@ namespace WebApplication1.Controllers
                             Email = info.Principal.FindFirstValue(ClaimTypes.Email)
 
                         };
-                        await userManager.CreateAsync(user); 
+                        await userManager.CreateAsync(user);
+
+                        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+                        logger.Log(LogLevel.Warning, confirmationLink);
+                        if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            return RedirectToAction("ListUsers", "Administration");
+                        }
+                        ViewBag.ErrorTitle = "Registration successful";
+                        ViewBag.ErrorMessage = "before you can login, please confirm your email by clicking on the confirmation link sent to your email.";
+                        return View("Error");
                     }
                     await userManager.AddLoginAsync(user, info);
                     await signInManager.SignInAsync(user, isPersistent: false);
@@ -172,6 +208,88 @@ namespace WebApplication1.Controllers
                 }
             }
             return View(loginViewModel);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if(userId == null || token == null)
+            {
+                return RedirectToAction("index", "home");
+            }
+            var user = await userManager.FindByIdAsync(userId);
+            if(user == null)
+            {
+                ViewBag.ErrorMessage = $"The user with Id = {userId} cannot be found";
+                return View("NotFound");
+            }
+            var result = await userManager.ConfirmEmailAsync(user, token);
+            if(result.Succeeded)
+            {
+                return View();
+            }
+            ViewBag.ErrorTitle = "Email cannot be confirmed";
+            return View("Error");
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost][AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if(user != null && (await userManager.IsEmailConfirmedAsync(user)))
+                {
+                    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+                    var resetPasswordLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token = token}, Request.Scheme);
+                    logger.Log(LogLevel.Warning, resetPasswordLink);
+                    return View("ForgotPasswordConfirmation");
+                }
+                return View("ForgotPasswordConfirmation");
+            }
+            return View(model);
+        }
+
+        [HttpGet][AllowAnonymous]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if(token == null && email == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid password reset link");                
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if(user != null)
+                {
+                    var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    if(result.Succeeded)
+                    {
+                        return View("ResetPasswordConfirmation");
+                    }
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(model);
+                }
+                return View("ResetPasswordConfirmation");
+            }
+            return View(model);
         }
     }
 }

@@ -36,8 +36,20 @@ namespace WebApplication1
                 //alters the default password validation
                 options.Password.RequiredLength = 10;
                 options.Password.RequiredUniqueChars = 3;
-            }).AddEntityFrameworkStores<AppDbContext>();
-            
+                options.SignIn.RequireConfirmedEmail = true;
+
+                options.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmation";
+            }).AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders()
+            .AddTokenProvider<CustomEmailConfirmationTokenProvider<ApplicationUser>>("CustomEmailConfirmation");
+
+            //reset the expiration time of tokens to 5 hrs...tokens for email confirmation and reset password
+            services.Configure<DataProtectionTokenProviderOptions>(
+                                options => options.TokenLifespan = TimeSpan.FromHours(5));
+
+            //set the liftspan of email confirmation token to 3 days
+            services.Configure<CustomEmailConfirmationTokenProviderOptions>(
+                                o => o.TokenLifespan = TimeSpan.FromDays(3));
             //adds all the services we need to use MVC in .net app, calls addMvcCore under the hood
             services.AddMvc(options => 
             {
